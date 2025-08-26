@@ -9,13 +9,26 @@
 
           <div class="content-wrapper">
                   @if(session('success'))
-                   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999;">
+                   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999; color:white;">
                     <div id="liveToast" class="toast align-items-center text-bg-success border-0 bg-success" role="alert" aria-live="assertive" aria-atomic="true">
                       <div class="d-flex">
                         <div class="toast-body">
                           {{ session('success') }}
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" style="color:white;" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                    </div>
+                  </div>
+                  @endif
+
+                   @if(session('error'))
+                   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999; color:white;">
+                    <div id="liveToast" class="toast align-items-center text-bg-danger border-0 bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="d-flex">
+                        <div class="toast-body">
+                          {{ session('error') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" style="color:white;" data-bs-dismiss="toast" aria-label="Close"></button>
                       </div>
                     </div>
                   </div>
@@ -113,40 +126,60 @@
                     <!-- /Account -->
                   </div>
 
+
+
                   <div class="card mb-4">
                     <h5 class="card-header">Profile Password</h5>
                     <!-- Password -->
                     
                     
+                    @if (count($errors))
+                      @foreach ($errors->all() as $error)
+                       <!-- <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999; color:white;">
+                          <div id="liveToast" class="toast align-items-center text-bg-success border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                              <div class="toast-body">
+                                {{ $error }}
+                              </div>
+                              <button type="button" class="btn-close btn-close-white me-2 m-auto" style="color:white;" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                          </div>
+                        </div> -->
+                        <p class="alert alert-danger alert-dismissable fade show col-md-6">{{ $error }}</p>
+                      @endforeach
+                    @endif
+                    
                     <div class="card-body">
-                      <form method="POST" action="">
+                      <form method="POST" action="{{ route('update.password') }}">
                         @csrf
-                        @method('patch')
+                        <!-- @method('patch') -->
 
                         <div class="row">
 
                           <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Old Password </label>
+                            <label for="oldpassword" class="form-label">Old Password </label>
                             <input
                               class="form-control"
                               type="password"
-                              id="name"
-                              name="name"
+                              id="oldpassword"
+                              name="oldpassword"
                               autofocus
                             />
                           </div>
 
                           <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label">New Password </label>
-                            <input class="form-control" type="text" name="lastName" id="lastName"  />
+                            <label for="newpassword" class="form-label">New Password </label>
+                            <input class="form-control" type="password" name="newpassword" id="newpassword"  />
                           </div>
 
-
-                        
+                          <div class="mb-3 col-md-6">
+                            <label for="confirm_password" class="form-label">Confirm Password </label>
+                            <input class="form-control" type="password" name="confirm_password" id="confirm_password"  />
+                          </div>
                           
                         </div>
                         <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                          <button type="submit" class="btn btn-primary me-2">Change password</button>
                           <button type="reset" class="btn btn-outline-secondary">Cancel</button>
                         </div>
                       </form>

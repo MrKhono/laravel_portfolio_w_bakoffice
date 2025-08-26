@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
+use Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,7 @@ class AdminController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('success', 'User logout succesfullly ✅');
     }
 
     public function profile(){
@@ -56,5 +57,35 @@ class AdminController extends Controller
 
 
         return redirect()->route('admin.profile')->with('success', 'Admin profile updated succesfullly ✅');
+    }
+
+    public function updatePassword(Request $request){
+
+        $valideData = $request->validate([
+            'oldpassword' => 'required',
+            'newpassword' => 'required',
+            'confirm_password' => 'required|same:newpassword',
+        ]);
+
+        $hashedPassword = Auth::user()->password;
+        if ( Hash::check($request->oldpassword,$hashedPassword) ) {
+            # code...
+            $users = User::find(Auth::id());
+            $users->password = bcrypt($request->newpassword);
+            $users->save();
+
+            session()->flash('message','Password updated succesfullly');
+
+            return redirect()->back()->with('success', 'Password updated succesfullly ✅');
+            // return redirect()->route('admin.profile')->with('success', 'Password updated succesfullly ✅');
+
+        }else{
+
+            // session()->flash('message','Old password incorrect');
+            return redirect()->back()->with('error', 'Old password incorrect');
+
+        }
+
+        
     }
 }
